@@ -14,8 +14,9 @@ class RumahController extends Controller
      */
     public function index()
     {
-        $rumah=Rumah::with('kelurahan.kecamatan')->get();
-        return view('rumah.index');
+        $rumah = Rumah::with('kelurahan.kecamatan')->get();
+
+        return view('rumah.index', compact('rumah'));
     }
 
     /**
