@@ -19,6 +19,7 @@
                     <th scope="col">Kecamatan</th>
                     <th scope="col">Kondisi</th>
                     <th scope="col">Tahun Pendataan</th>
+                    <th scope="col">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +31,15 @@
                         <td>{{ $item->kelurahan?->kecamatan?->nama_kecamatan ?? '-' }}</td>
                         <td>{{ $item->kondisi }}</td>
                         <td>{{ $item->tahun_pendataan }}</td>
+                        <td>
+                            <a href="{{ route('rumah.show', $item->id) }}" class="btn btn-primary btn-sm">Detail</a>
+                            <a href="{{ route('rumah.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <form action="{{ route('rumah.destroy', $item->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
+                            </form>
+                        </td>
                     </tr>
                 @empty
                     <tr>
