@@ -22,11 +22,20 @@
             </div>
         @endif
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-start mb-3">
 
+        <div>
             <a href="{{ route('rumah.create') }}" class="btn btn-primary">
                 Tambah Data
             </a>
+
+            <div>
+                <span class="badge bg-dark">Total: {{$totalRumah}}</span>
+                <span class="badge bg-success">Rusak Ringan: {{$rusakRingan}}</span>
+                <span class="badge bg-warning text-dark">Rusak Sedang: {{$rusakSedang}}</span>
+                <span class="badge bg-danger">Rusak Berat: {{$rusakBerat}}</span>
+            </div>
+        </div>
 
             <form action="{{ route('rumah.index') }}" method="GET" class="d-flex">
 

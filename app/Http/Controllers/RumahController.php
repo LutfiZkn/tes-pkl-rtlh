@@ -12,11 +12,29 @@ class RumahController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $rumah = Rumah::with('kelurahan.kecamatan')->get();
+        $search = $request->search;
+        $kondisi = $request->kondisi;
 
-        return view('rumah.index', compact('rumah'));
+        $rumah = Rumah::with('kelurahan.kecamatan')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_pemilik', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%");
+            });
+        })
+        ->when($kondisi, function ($query) use ($kondisi) {
+                $query->where('kondisi', $kondisi);
+            })
+        ->latest()
+        ->get();
+
+        $totalRumah = Rumah::count();
+        $rusakRingan = Rumah::where('kondisi', 'Rusak Ringan')->count();
+        $rusakSedang = Rumah::where('kondisi', 'Rusak Sedang')->count();
+        $rusakBerat = Rumah::where('kondisi', 'Rusak Berat')->count();
+        return view('rumah.index', compact('rumah', 'totalRumah', 'rusakRingan', 'rusakSedang', 'rusakBerat'));
     }
 
     /**
@@ -43,9 +61,10 @@ class RumahController extends Controller
     public function show(string $id)
     {
         $rumah = Rumah::findOrFail($id);
+        $rumah->load('kelurahan.kecamatan');
         $kelurahan=Kelurahan::with('kecamatan')->get();
 
-        return view('rumah.show', compact('rumah'));
+        return view('rumah.show', compact('rumah', 'kelurahan'));
     }
 
     /**
@@ -56,7 +75,9 @@ class RumahController extends Controller
         $rumah = Rumah::findOrFail($id);
         $rumah->load('kelurahan.kecamatan');
 
-        return view('rumah.edit', compact('rumah'));
+        $kelurahan=Kelurahan::with('kecamatan')->get();
+
+        return view('rumah.edit', compact('rumah', 'kelurahan'));
     }
 
     /**
