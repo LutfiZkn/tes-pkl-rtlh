@@ -7,13 +7,68 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
+
+    @extends('layouts.app')
+    @section('title', 'Data Rumah')
+    @section('content')
+
     <div class="container py-4">
-        <h2 class="text-center fw-bold mb-4">PENDATAAN RUMAH TIDAK LAYAK HUNI</h2>
+        <h2 class="text-center fw-bold mb-4">PENDATAAN KONDISI RUMAH</h2>
+
+        @if (session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="float: right;"></button>
+            </div>
+        @endif
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <a href="{{ route('rumah.create') }}" class="btn btn-primary">
+                Tambah Data
+            </a>
+
+            <form action="{{ route('rumah.index') }}" method="GET" class="d-flex">
+
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control me-2"
+                    placeholder="Cari Nama atau NIK"
+                    value="{{ request('search') }}">
+
+                <select name="kondisi" class="form-select me-2">
+                    <option value="">Semua</option>
+
+                    <option value="Rusak Ringan"
+                        {{ request('kondisi') == 'Rusak Ringan' ? 'selected' : '' }}>
+                        Rusak Ringan
+                    </option>
+
+                    <option value="Rusak Sedang"
+                        {{ request('kondisi') == 'Rusak Sedang' ? 'selected' : '' }}>
+                        Rusak Sedang
+                    </option>
+
+                    <option value="Rusak Berat"
+                        {{ request('kondisi') == 'Rusak Berat' ? 'selected' : '' }}>
+                        Rusak Berat
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-success">
+                    Cari
+                </button>
+
+            </form>
+
+        </div>
 
         <table class="table table-striped table-hover table-bordered">
             <thead>
                 <tr>
                     <th scope="col">No</th>
+                    <th scope="col">Nama Pemilik</th>
                     <th scope="col">Alamat</th>
                     <th scope="col">Kelurahan</th>
                     <th scope="col">Kecamatan</th>
@@ -26,6 +81,7 @@
                 @forelse ($rumah as $item)
                     <tr>
                         <th scope="row">{{ $loop->iteration }}</th>
+                        <td>{{ $item->nama_pemilik }}</td>
                         <td>{{ $item->alamat }}</td>
                         <td>{{ $item->kelurahan?->nama_kelurahan ?? '-' }}</td>
                         <td>{{ $item->kelurahan?->kecamatan?->nama_kecamatan ?? '-' }}</td>
@@ -43,11 +99,15 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center">Belum ada data rumah</td>
+                        <td colspan="8" class="text-center">Belum ada data rumah</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
+
+    @endsection
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 </html>
