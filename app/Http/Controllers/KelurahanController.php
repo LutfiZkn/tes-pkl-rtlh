@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Kelurahan;
+use App\Models\Kecamatan;
+use App\Http\Requests\KelurahanRequest;
 
 class KelurahanController extends Controller
 {
@@ -11,7 +14,9 @@ class KelurahanController extends Controller
      */
     public function index()
     {
-        //
+        return view('kelurahan.index', [
+            'kelurahan' => Kelurahan::with('kecamatan')->get(),
+        ]);
     }
 
     /**
@@ -19,15 +24,20 @@ class KelurahanController extends Controller
      */
     public function create()
     {
-        //
+        return view('kelurahan.create', [
+            'kecamatan' => Kecamatan::all(),
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(KelurahanRequest $request)
     {
-        //
+
+        Kelurahan::create($request->validated());
+
+        return redirect()->route('kelurahan.index')->with('success', 'Data berhasil disimpan.');
     }
 
     /**
@@ -35,7 +45,9 @@ class KelurahanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('kelurahan.show', [
+            'kelurahan' => Kelurahan::with('kecamatan')->findOrFail($id),
+        ]);
     }
 
     /**
@@ -43,15 +55,21 @@ class KelurahanController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('kelurahan.edit', [
+            'kelurahan' => Kelurahan::with('kecamatan')->findOrFail($id),
+            'kecamatan' => Kecamatan::all(),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(KelurahanRequest $request, string $id)
     {
-        //
+        $kelurahan = Kelurahan::findOrFail($id);
+        $kelurahan->update($request->validated());
+
+        return redirect()->route('kelurahan.index')->with('success', 'Data berhasil diperbarui.');
     }
 
     /**
@@ -59,6 +77,9 @@ class KelurahanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $kelurahan = Kelurahan::findOrFail($id);
+        $kelurahan->delete();
+
+        return redirect()->route('kelurahan.index')->with('success', 'Data kelurahan berhasil dihapus.');
     }
 }
