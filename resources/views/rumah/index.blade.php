@@ -113,6 +113,11 @@
                 @endforelse
             </tbody>
         </table>
+        
+        <div class="mt-3">
+            {{ $rumah->links() }}
+        </div>
+        
     </div>
 
     @endsection

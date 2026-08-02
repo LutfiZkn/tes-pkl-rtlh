@@ -28,7 +28,7 @@ class RumahController extends Controller
                 $query->where('kondisi', $kondisi);
             })
         ->latest()
-        ->get();
+        ->paginate(10);
 
         $totalRumah = Rumah::count();
         $rusakRingan = Rumah::where('kondisi', 'Rusak Ringan')->count();
