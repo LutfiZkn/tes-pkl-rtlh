@@ -65,9 +65,22 @@
                     </option>
                 </select>
 
+                <select name="kelurahan" class="form-select me-2">
+                    <option value="">Semua Kelurahan</option>
+                    @foreach($kelurahan as $item)
+                        <option value="{{ $item->id }}"
+                            {{ request('kelurahan') == $item->id ? 'selected' : '' }}>
+                            {{ $item->nama_kelurahan }}
+                        </option>
+                    @endforeach
+                </select>
+
                 <button type="submit" class="btn btn-success">
                     Cari
                 </button>
+                <a href="{{ route('rumah.index') }}" class="btn btn-danger">
+                    Hapus
+                </a>
 
             </form>
 
@@ -94,7 +107,15 @@
                         <td>{{ $item->alamat }}</td>
                         <td>{{ $item->kelurahan?->nama_kelurahan ?? '-' }}</td>
                         <td>{{ $item->kelurahan?->kecamatan?->nama_kecamatan ?? '-' }}</td>
-                        <td>{{ $item->kondisi }}</td>
+                        <td>
+                            @if($item->kondisi == 'Rusak Ringan') 
+                                <span class="badge bg-success">{{$item->kondisi}}</span>
+                            @elseif($item->kondisi == 'Rusak Sedang') 
+                                <span class="badge bg-warning text-dark">{{$item->kondisi}}</span>
+                            @else 
+                                <span class="badge bg-danger">{{$item->kondisi}}</span>
+                            @endif
+                        </td>
                         <td>{{ $item->tahun_pendataan }}</td>
                         <td>
                             <a href="{{ route('rumah.show', $item->id) }}" class="btn btn-primary btn-sm">Detail</a>
@@ -117,7 +138,7 @@
         <div class="mt-3">
             {{ $rumah->links() }}
         </div>
-        
+
     </div>
 
     @endsection

@@ -27,6 +27,9 @@ class RumahController extends Controller
         ->when($kondisi, function ($query) use ($kondisi) {
                 $query->where('kondisi', $kondisi);
             })
+        ->when($request->filled('kelurahan'), function ($query) use ($request) {
+            $query->where('kelurahan_id', $request->kelurahan);
+        })
         ->latest()
         ->paginate(10);
 
@@ -34,7 +37,10 @@ class RumahController extends Controller
         $rusakRingan = Rumah::where('kondisi', 'Rusak Ringan')->count();
         $rusakSedang = Rumah::where('kondisi', 'Rusak Sedang')->count();
         $rusakBerat = Rumah::where('kondisi', 'Rusak Berat')->count();
-        return view('rumah.index', compact('rumah', 'totalRumah', 'rusakRingan', 'rusakSedang', 'rusakBerat'));
+
+        $kelurahan = Kelurahan::orderBy('nama_kelurahan')->get();
+        
+        return view('rumah.index', compact('rumah', 'kelurahan', 'totalRumah', 'rusakRingan', 'rusakSedang', 'rusakBerat'));
     }
 
     /**
