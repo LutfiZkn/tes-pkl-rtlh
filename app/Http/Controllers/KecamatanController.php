@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Kecamatan;
+use App\Http\Requests\KecamatanRequest;
 
 class KecamatanController extends Controller
 {
@@ -11,7 +13,9 @@ class KecamatanController extends Controller
      */
     public function index()
     {
-        //
+        return view('kecamatan.index', [
+            'kecamatan' => Kecamatan::latest()->get(),
+        ]);
     }
 
     /**
@@ -19,15 +23,17 @@ class KecamatanController extends Controller
      */
     public function create()
     {
-        //
+        return view('kecamatan.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(KecamatanRequest $request)
     {
-        //
+        Kecamatan::create($request->validated());
+
+        return redirect()->route('kecamatan.index')->with('success', 'Data berhasil disimpan.');
     }
 
     /**
@@ -35,7 +41,9 @@ class KecamatanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('kecamatan.show', [
+            'kecamatan' => Kecamatan::findOrFail($id),
+        ]);
     }
 
     /**
@@ -43,7 +51,9 @@ class KecamatanController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('kecamatan.edit', [
+            'kecamatan' => Kecamatan::findOrFail($id),
+        ]);
     }
 
     /**
@@ -51,7 +61,10 @@ class KecamatanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $kecamatan = Kecamatan::findOrFail($id);
+        $kecamatan->update($request->validated());
+
+        return redirect()->route('kecamatan.index')->with('success', 'Data berhasil diperbarui.');
     }
 
     /**
@@ -59,6 +72,9 @@ class KecamatanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $kecamatan = Kecamatan::findOrFail($id);
+        $kecamatan->delete();
+
+        return redirect()->route('kecamatan.index')->with('success', 'Data berhasil dihapus.');
     }
 }
