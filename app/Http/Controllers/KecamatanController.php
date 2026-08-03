@@ -59,7 +59,7 @@ class KecamatanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(KecamatanRequest $request, string $id)
     {
         $kecamatan = Kecamatan::findOrFail($id);
         $kecamatan->update($request->validated());
