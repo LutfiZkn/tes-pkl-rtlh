@@ -92,5 +92,15 @@ class RumahSeeder extends Seeder
             'tahun_pendataan' => 2026,
             'keterangan' => 'Kondisi rumah layak huni'
         ]);
+
+        Rumah::create([
+            'kelurahan_id' => 5,
+            'nama_pemilik' => 'tes',
+            'nik' => '0000000',
+            'alamat' => 'jalan jalan dengan sepatu rodaku',
+            'kondisi' => 'Rusak Sedang',
+            'tahun_pendataan' => 2025,
+            'keterangan' => 'Kondisi rumah memerlukan perbaikan pada beberapa bagian'
+        ]);
     }
 }

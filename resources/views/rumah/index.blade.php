@@ -135,6 +135,7 @@
             </tbody>
         </table>
         
+        <!-- Pagination -->
         <div class="mt-3">
             {{ $rumah->links() }}
         </div>
