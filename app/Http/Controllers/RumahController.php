@@ -41,7 +41,9 @@ class RumahController extends Controller
         $kelurahan = Kelurahan::orderBy('nama_kelurahan')->get();
         
         return view('rumah.index', compact('rumah', 'kelurahan', 'totalRumah', 'rusakRingan', 'rusakSedang', 'rusakBerat'));
-    }
+
+        }
+        
 
     /**
      * Show the form for creating a new resource.
@@ -57,7 +59,17 @@ class RumahController extends Controller
      */
     public function store(RumahRequest $request)
     {
-        Rumah::create($request->validated());
+        $data = $request->validated();
+
+        unset($data['foto']);
+        $rumah = Rumah::create($data);
+
+        if ($request->hasFile('foto')) {
+            foreach ($request->file('foto') as $file) {
+                $path = $file->store('foto-rumah', 'public');
+                $rumah->fotoRumah()->create(['nama_file' => $file->getClientOriginalName(), 'path' => $path]);
+            }
+        }
         return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil disimpan.');
     }
 
@@ -67,7 +79,7 @@ class RumahController extends Controller
     public function show(string $id)
     {
         $rumah = Rumah::findOrFail($id);
-        $rumah->load('kelurahan.kecamatan');
+        $rumah->load(['kelurahan.kecamatan', 'fotoRumah']);
         $kelurahan=Kelurahan::with('kecamatan')->get();
 
         return view('rumah.show', compact('rumah', 'kelurahan'));
@@ -91,7 +103,20 @@ class RumahController extends Controller
      */
     public function update(RumahRequest $request, Rumah $rumah)
     {
-        $rumah->update($request->validated());
+        $data = $request->validated();
+
+        unset($data['foto']);
+        $rumah->update($data);
+
+        if ($request->hasFile('foto')) {
+            foreach ($request->file('foto') as $file) {
+                $path = $file->store('foto-rumah', 'public');
+                $rumah->fotoRumah()->create([
+                    'nama_file' => $file->getClientOriginalName(),
+                    'path' => $path,
+                ]);
+            }
+        }
 
         return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil diperbarui.');
     }
@@ -105,5 +130,13 @@ class RumahController extends Controller
         $rumah->delete();
 
         return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil dihapus.');
+    }
+
+    public function forceDelete($id)
+    {
+        $rumah = Rumah::withTrashed()->findOrFail($id);
+        $rumah->forceDelete();
+
+        return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil dihapus permanen.');
     }
 }
