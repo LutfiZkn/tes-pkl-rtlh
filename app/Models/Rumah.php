@@ -22,6 +22,8 @@ class Rumah extends Model
         'kondisi',
         'tahun_pendataan',
         'keterangan',
+        'status_verifikasi',
+        'alasan_penolakan',
     ];
 
     public function kelurahan()

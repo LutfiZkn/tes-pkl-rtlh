@@ -36,5 +36,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:Admin'])->group(function () {
+
+    Route::patch('/rumah/{rumah}/verifikasi', [RumahController::class, 'updateVerifikasi'])
+        ->name('rumah.verifikasi');
+
     Route::resource('user', UserController::class);
 });

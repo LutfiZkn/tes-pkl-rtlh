@@ -101,6 +101,7 @@
                     <th scope="col">Kondisi</th>
                     <th scope="col">Tahun Pendataan</th>
                     <th scope="col">Aksi</th>
+                    <th scope="col">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,6 +130,15 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
                             </form>
+                            <td>
+                                @if($item->status_verifikasi === 'Terverifikasi')
+                                    <span class="badge bg-success">Terverifikasi</span>
+                                @elseif($item->status_verifikasi === 'Ditolak')
+                                    <span class="badge bg-danger">Ditolak</span>
+                                @else
+                                    <span class="badge bg-warning" text-dark>Belum Terverifikasi</span>
+                                @endif
+                            </td>
                         </td>
                     </tr>
                 @empty

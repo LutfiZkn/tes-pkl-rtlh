@@ -62,6 +62,11 @@ class RumahController extends Controller
         $data = $request->validated();
 
         unset($data['foto']);
+        
+        //Data baru = blum diverifikasi
+        $data['status_verifikasi'] = 'Belum diverifikasi';
+        $data['alasan_penolakan'] = null;
+
         $rumah = Rumah::create($data);
 
         if ($request->hasFile('foto')) {
@@ -155,5 +160,26 @@ class RumahController extends Controller
         $rumah->restore();
 
         return redirect()->route('rumah.trash')->with('success', 'Data rumah berhasil dikembalikan.');
+    }
+
+    public function updateVerifikasi(Request $request, Rumah $rumah)
+    {
+        $request->validate([
+            'status_verifikasi' => 'required|in:Belum diverifikasi,Terverifikasi,Ditolak',
+            'alasan_penolakan' => 'nullable|string|max:1000',
+        ]);
+
+        if ($request->status_verifikasi === 'Ditolak') {
+            $request->validate([
+                'alasan_penolakan' => 'required|string|max:1000',
+            ]);
+        }
+
+        $rumah->update([
+            'status_verifikasi' => $request->status_verifikasi,
+            'alasan_penolakan' => $request->status_verifikasi === 'Ditolak' ? $request->alasan_penolakan : null,
+        ]);
+
+        return redirect()->route('rumah.show', $rumah)->with('success', 'Data rumah berhasil diperbarui.');
     }
 }
