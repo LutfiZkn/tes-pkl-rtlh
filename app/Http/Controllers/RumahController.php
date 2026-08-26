@@ -134,9 +134,26 @@ class RumahController extends Controller
 
     public function forceDelete($id)
     {
-        $rumah = Rumah::withTrashed()->findOrFail($id);
+        $rumah = Rumah::onlyTrashed()->findOrFail($id);
         $rumah->forceDelete();
 
-        return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil dihapus permanen.');
+        return redirect()->route('rumah.trash')->with('success', 'Data rumah berhasil dihapus permanen.');
+    }
+
+    public function trash()
+    {
+        $rumah = Rumah::onlyTrashed()
+        ->with(['kelurahan', 'fotoRumah'])
+        ->latest('deleted_at')
+        ->get();
+        return view('rumah.trash', compact('rumah'));
+    }
+
+    public function restore($id)
+    {
+        $rumah = Rumah::onlyTrashed()->findOrFail($id);
+        $rumah->restore();
+
+        return redirect()->route('rumah.trash')->with('success', 'Data rumah berhasil dikembalikan.');
     }
 }

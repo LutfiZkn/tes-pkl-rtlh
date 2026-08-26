@@ -29,6 +29,10 @@
                 Tambah Data
             </a>
 
+            <a href="{{ route('rumah.trash') }}" class="btn btn-danger">
+                Data Terhapus
+            </a>
+
             <div>
                 <span class="badge bg-dark">Total: {{$totalRumah}}</span>
                 <span class="badge bg-success">Rusak Ringan: {{$rusakRingan}}</span>
