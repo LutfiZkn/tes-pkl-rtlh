@@ -22,6 +22,10 @@
 
                     @include('rumah.form')
 
+                    <div class="d-flex justify-content-end mb-3">
+                        <a href="{{ route('rumah.riwayat.create', $rumah) }}" class="btn btn-primary">Tambah Riwayat</a>
+                    </div>
+
                     <!-- Foto Rumah -->
                     @if ($rumah->fotoRumah->isNotEmpty())
                         <div class="mt-4">
@@ -42,7 +46,48 @@
                         </div>
                     @endif
 
-                     <!--Status Verif -->
+                    <!-- Histori Verif -->
+                     <hr class="my-4">
+                     <h5 class="mb-3">Riwayat Kondisi</h5>
+                     @if ($rumah->riwayatRumah->isNotEmpty())
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tanggal Survey</th>
+                                        <th>Kondisi</th>
+                                        <th>Keterangan</th>
+                                        <th>Petugas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($rumah->riwayatRumah->sortByDesc('tanggal_survei') as $riwayat)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $riwayat->tanggal_survei->format('d-m-y') }}</td>
+                                            <td>
+                                                @if($riwayat->kondisi == 'Rusak Ringan') 
+                                                    <span class="badge bg-success">Rusak Ringan</span>
+                                                @elseif($riwayat->kondisi == 'Rusak Sedang') 
+                                                    <span class="badge bg-warning text-dark">Rusak Sedang</span>
+                                                @else 
+                                                    <span class="badge bg-danger">Rusak Berat</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $riwayat->keterangan ?? '-' }}</td>
+                                            <td>{{ $riwayat->user?->name ?? '-' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        @else
+                            <div class="alert alert-secondary">Belum ada riwayat survei</div>
+                        @endif
+
+                    <!-- Status Verif -->
                     <div class="mt-4">
                         <h5>Status Verifikasi</h5>
                         

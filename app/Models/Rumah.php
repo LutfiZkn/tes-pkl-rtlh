@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\FotoRumah;
 use Illuminate\Support\Facades\Storage;
+use App\Models\RiwayatRumah;
 
 class Rumah extends Model
 {
@@ -34,6 +35,11 @@ class Rumah extends Model
     public function fotoRumah(): HasMany
     {
         return $this->hasMany(FotoRumah::class);
+    }
+
+    public function riwayatRumah(): HasMany
+    {
+        return $this->hasMany(RiwayatRumah::class);
     }
 
     protected static function booted(): void

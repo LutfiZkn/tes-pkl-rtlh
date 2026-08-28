@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\RumahRequest;
 use App\Models\Rumah;
 use App\Models\Kecamatan;
@@ -118,6 +119,14 @@ class RumahController extends Controller
 
         $rumah = Rumah::create($data);
 
+        //riwayat
+        $rumah->riwayatRumah()->create([
+            'user_id' => Auth::id(),
+            'kondisi' => $rumah->kondisi,
+            'tanggal_survei' => now(),
+            'keterangan' => $rumah->keterangan,
+        ]);
+
         if ($request->hasFile('foto')) {
             foreach ($request->file('foto') as $file) {
                 $path = $file->store('foto-rumah', 'public');
@@ -133,7 +142,7 @@ class RumahController extends Controller
     public function show(string $id)
     {
         $rumah = Rumah::findOrFail($id);
-        $rumah->load(['kelurahan.kecamatan', 'fotoRumah']);
+        $rumah->load(['kelurahan.kecamatan', 'fotoRumah', 'riwayatRumah.user',]);
         $kelurahan=Kelurahan::with('kecamatan')->get();
 
         return view('rumah.show', compact('rumah', 'kelurahan'));
@@ -160,7 +169,21 @@ class RumahController extends Controller
         $data = $request->validated();
 
         unset($data['foto']);
+
+        //kondisi lama
+        $kondisiLama = $rumah->kondisi;
+
         $rumah->update($data);
+
+        //riwayat
+        if ($kondisiLama !== $rumah->kondisi){
+            $rumah->riwayatRumah()->create([
+                'user_id' => Auth::id(),
+                'kondisi' => $rumah->kondisi,
+                'tanggal_survei' => now(),
+                'keterangan' => $rumah->keterangan,
+            ]);
+        }
 
         if ($request->hasFile('foto')) {
             foreach ($request->file('foto') as $file) {
@@ -230,5 +253,29 @@ class RumahController extends Controller
         ]);
 
         return redirect()->route('rumah.show', $rumah)->with('success', 'Data rumah berhasil diperbarui.');
+    }
+
+    public function storeRiwayat(Request $request, Rumah $rumah)
+    {
+        $request->vaidate([
+            'kondisi' => 'required|in:Rusak Ringan,Rusak Sedang,Rusak Berat',
+            'tanggal_survei' => 'required|date',
+            'keterangan' => 'nullable|string|max:1000',
+        ]);
+
+        $rumah->riwayatRumah()->create([
+            'user_id' => Auth::id(),
+            'kondisi' => $request->kondisi,
+            'tanggal_survei' => $request->tanggal_survei,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        //upd kondisi utama
+        $rumah->update([
+            'kondisi' => $request->kondisi,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return redirect()->route('rumah.show', $rumah)->with('success', 'Data riwayat berhasil disimpan.');
     }
 }
