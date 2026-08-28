@@ -17,8 +17,12 @@ class RiwayatController extends Controller
     {
         $request->validate([
             'kondisi' => 'required|in:Rusak Ringan,Rusak Sedang,Rusak Berat',
-            'tanggal_survei' => 'required|date',
+            'tanggal_survei' => 'required|date|before_or_equal:today',
             'keterangan' => 'nullable|string',
+        ], [
+            'tanggal_survei.before_or_equal' => 'Tanggal survei tidak boleh melebihi tanggal hari ini.',
+            'tanggal_survei.required' => 'Tanggal survei harus diisi.',
+            'tanggal_survei.date' => 'Format tanggal survei tidak valid.',
         ]);
 
         $rumah->riwayatRumah()->create([
