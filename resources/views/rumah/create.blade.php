@@ -15,7 +15,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('rumah.store') }}" method="POST">
+                    <form action="{{ route('rumah.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @include('rumah.form')
 

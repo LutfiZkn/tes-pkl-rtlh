@@ -22,157 +22,210 @@
             </div>
         @endif
 
-        <div class="d-flex justify-content-between align-items-start mb-3">
 
-        <div>
-            <a href="{{ route('rumah.create') }}" class="btn btn-primary">
-                Tambah Data
-            </a>
+        <div class="mx-auto mb-4" style="max-width: 1200px; width: 100%;">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="fw-bold mb-0">Ringkasan Data Rumah</h5>
 
-            <a href="{{ route('rumah.trash') }}" class="btn btn-danger">
-                Data Terhapus
-            </a>
+                    <!-- Button Tambah/Sampah -->
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('rumah.create') }}" class="btn btn-primary btn-sm">
+                            Tambah Data
+                        </a>
+                        <a href="{{ route('rumah.trash') }}" class="btn btn-danger btn-sm">
+                            Data Terhapus
+                        </a>
+                    </div>
+                </div>
 
-            <div>
-                <span class="badge bg-dark">Total: {{$totalRumah}}</span>
-                <span class="badge bg-success">Rusak Ringan: {{$rusakRingan}}</span>
-                <span class="badge bg-warning text-dark">Rusak Sedang: {{$rusakSedang}}</span>
-                <span class="badge bg-danger">Rusak Berat: {{$rusakBerat}}</span>
+                <div class="card-body">
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="text-muted small">Total Rumah</div>
+                                <div class="fs-3 fw-bold">{{ $totalRumah }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="text-muted small">Rusak Ringan</div>
+                                <div class="fs-3 fw-bold">{{ $rusakRingan }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="text-muted small">Rusak Sedang</div>
+                                <div class="fs-3 fw-bold">{{ $rusakSedang }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="text-muted small">Rusak Berat</div>
+                                <div class="fs-3 fw-bold">{{ $rusakBerat }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-            <form action="{{ route('rumah.index') }}" method="GET" class="row g-2 justify-content-end">
+        <!-- Filter Data -->
+        <div class="card shadow-sm border-0 mb-4">
 
-            <!-- Search Nama/NIK -->
-            <div class="col-md-3">
-                <input
-                        type="text"
-                        name="search"
-                        class="form-control"
-                        placeholder="Cari Nama atau NIK"
-                        value="{{ request('search') }}">
+            <div class="card-header bg-white">
+                <h5 class="fw-bold mb-0">Filter Data Rumah</h5>
             </div>
-            
-            <!-- Search Kecamatan -->
-             <div class="col-md-2">
-                <select name="kecamatan" class="form-select"><option value="">Semua Kecamatan</option>
-                    @foreach($daftarKecamatan as $item)
-                    <option value="{{ $item->id }}"
-                     {{ request('kecamatan') == $item->id ? 'selected' : '' }}>
-                     {{ $item->nama_kecamatan }}
-                    </option>
-                    @endforeach
-                </select>
-             </div>
 
-             <!-- Search Kelurahan -->
-             <div class="col-md-2">
-                <select name="kelurahan" class="form-select">
-                    <option value="">Semua Kelurahan</option>
-                    @foreach($daftarKelurahan as $item)
-                        <option value="{{ $item->id }}"
-                            {{ request('kelurahan') == $item->id ? 'selected' : '' }}>
-                            {{ $item->nama_kelurahan }}
-                        </option>
-                    @endforeach
-                </select>
-             </div>
+            <div class="card-body">
+                <form action="{{ route('rumah.index') }}" method="GET">
 
+                    <div class="row g-3">
 
-             <!-- Search Kondisi -->
-             <div class="col-md-2">    
-                 <select name="kondisi" class="form-select">
-                     <option value="">Semua Kondisi</option>
- 
-                     <option value="Rusak Ringan"
-                         {{ request('kondisi') == 'Rusak Ringan' ? 'selected' : '' }}>
-                         Rusak Ringan
-                     </option>
- 
-                     <option value="Rusak Sedang"
-                         {{ request('kondisi') == 'Rusak Sedang' ? 'selected' : '' }}>
-                         Rusak Sedang
-                     </option>
- 
-                     <option value="Rusak Berat"
-                         {{ request('kondisi') == 'Rusak Berat' ? 'selected' : '' }}>
-                         Rusak Berat
-                     </option>
-                 </select>
-             </div>
+                        <!-- Search -->
+                        <div class="col-md-4">
+                            <label class="form-label">Cari Nama / NIK</label>
+                            <input
+                             type="text"
+                             name="search"
+                             class="form-control"
+                             placeholder="Masukkan Nama / NIK"
+                             value="{{ request('search') }}">
+                        </div>
 
-             <!-- Search Tahun -->
-             <div class="col-md-2">
-                <select name="tahun_pendataan" class="form-select"><option value="">Semua Tahun</option>
+                        <!-- Kecamatan -->
+                        <div class="col-md-2">
+                            <label class="form-label">Kecamatan</label>
+                            <select name="kecamatan" class="form-select">
+                                <option value="">Semua</option>
 
-                    @for($tahun = date('Y'); $tahun >= 2000; $tahun--)
-                    <option value="{{ $tahun }}"
-                        {{ request('tahun_pendataan') == $tahun ? 'selected' : '' }}>
-                        {{ $tahun }}
-                    </option>
-                    @endfor
-                </select>
-             </div>
+                                @foreach($daftarKecamatan ?? [] as $item)
+                                    <option value="{{ $item->id }}" {{ request('kecamatan') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->nama_kecamatan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-             <!-- Search Status -->
-             <div class="col-md-2">
-                <select name="status_verifikasi" class="form-select">
-                    <option value="">Semua Status</option>
+                        <!-- Kelurahan -->
+                        <div class="col-md-2">
+                            <label class="form-label">Kelurahan</label>
+                            <select name="kelurahan" class="form-select">
+                                <option value="">Semua</option>
 
-                    <option value="Terverifikasi"
-                        {{ request('status_verifikasi') == 'Terverifikasi' ? 'selected' : '' }}>
-                        Terverifikasi
-                    </option>
+                                @foreach($daftarKelurahan ?? [] as $item)
+                                    <option value="{{ $item->id }}" {{ request('kelurahan') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->nama_kelurahan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <option value="Belum Terverifikasi"
-                        {{ request('status_verifikasi') == 'Belum Terverifikasi' ? 'selected' : '' }}>
-                        Belum Terverifikasi
-                    </option>
+                        <!-- Kondisi -->
+                        <div class="col-md-2">
+                            <label class="form-label">Kondisi</label>
+                            <select name="kondisi" class="form-select">
+                                <option value="">Semua</option>
+                                <option value="rusak ringan" {{ request('kondisi') == 'rusak ringan' ? 'selected' : '' }}>
+                                    Rusak Ringan
+                                </option>
+                                <option value="rusak sedang" {{ request('kondisi') == 'rusak sedang' ? 'selected' : '' }}>
+                                    Rusak Sedang
+                                </option>
+                                <option value="rusak berat" {{ request('kondisi') == 'rusak berat' ? 'selected' : '' }}>
+                                    Rusak Berat
+                                </option>
+                            </select>
+                        </div>
 
-                    <option value="Ditolak"
-                        {{ request('status_verifikasi') == 'Ditolak' ? 'selected' : '' }}>
-                        Ditolak
-                    </option>
-                </select>
-             </div>
+                        <!-- Tahun -->
+                        <div class="col-md-2">
+                            <label class="form-label">Tahun</label>
+                            <input
+                            type="number"
+                            name="tahun_pendataan"
+                            class="form-control"
+                            min="2000"
+                            max="{{ date('Y') }}"
+                            placeholder="Masukkan tahun pendataan"
+                            value="{{ request('tahun_pendataan',) }}">
+                        </div>
 
-             <!-- Sorting -->
-              <div class="col-md-2">
-                <select name="sorting" class="form-select">
-                    <option value="terlama"
-                        {{ request('sorting', 'terlama')== 'terlama' ? 'selected' : '' }}>
-                        Terlama
-                    </option>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const yearFilter = document.querySelector('input[name="tahun_pendataan"]');
 
-                    <option value="terbaru"
-                        {{ request('sorting') == 'terbaru' ? 'selected' : '' }}>
-                        Terbaru
-                    </option>
+                                if (!yearFilter) {
+                                    return;
+                                }
 
-                    <option value="nama_az"
-                        {{ request('sorting') == 'nama_az' ? 'selected' : '' }}>
-                        Nama A-Z
-                    </option>
+                                yearFilter.addEventListener('invalid', function (event) {
+                                    event.preventDefault();
 
-                    <option value="nama_za"
-                        {{ request('sorting') == 'nama_za' ? 'selected' : '' }}>
-                        Nama Z-A
-                    </option>
-                </select>
-              </div>
+                                    if (Number(yearFilter.value) < 2000) {
+                                        yearFilter.setCustomValidity('Tahun pendataan minimal adalah 2000.');
+                                    } else if (Number(yearFilter.value) > Number(new Date().getFullYear())) {
+                                        yearFilter.setCustomValidity('Tahun pendataan tidak boleh lebih dari tahun saat ini.');
+                                    } else {
+                                        yearFilter.setCustomValidity('');
+                                    }
 
+                                    yearFilter.reportValidity();
+                                });
 
-             <div class="col-md-2">
-                <button type="submit" class="btn btn-success">
-                    Cari
-                </button>
-                <a href="{{ route('rumah.index') }}" class="btn btn-danger">
-                    Hapus
-                </a>
-             </div>
+                                yearFilter.addEventListener('input', function () {
+                                    yearFilter.setCustomValidity('');
+                                });
+                            });
+                        </script>
 
-            </form>
+                        <!-- Status -->
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select name="status_verifikasi" class="form-select">
+                                <option value="">Semua</option>
+                                <option value="Belum diverifikasi" {{ request('status_verifikasi') == 'Belum diverifikasi' ? 'selected' : '' }}>
+                                    Belum diverifikasi
+                                </option>
+                                <option value="Terverifikasi" {{ request('status_verifikasi') == 'Terverifikasi' ? 'selected' : '' }}>
+                                    Terverifikasi
+                                </option>
+                                <option value="Ditolak" {{ request('status_verifikasi') == 'Ditolak' ? 'selected' : '' }}>
+                                    Ditolak
+                                </option>
+                            </select>
+                        </div>
 
+                        <!-- Sorting -->
+                        <div class="col-md-3">
+                            <label class="form-label">Urutkan</label>
+                            <select name="sorting" class="form-select">
+                                <option value="terbaru" {{ request('sorting') == 'terbaru' ? 'selected' : '' }}>
+                                    Terbaru
+                                </option>
+                                <option value="terlama" {{ request('sorting') == 'terlama' ? 'selected' : '' }}>
+                                    Terlama
+                                </option>
+                                <option value="nama_az" {{ request('sorting') == 'nama_az' ? 'selected' : '' }}>
+                                    Nama A-Z
+                                </option>
+                                <option value="nama_za" {{ request('sorting') == 'nama_za' ? 'selected' : '' }}>
+                                    Nama Z-A
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Button -->
+                        <div class="col-md-7 d-flex justify-content-end align-items-end gap-2">
+                            <button type="submit" class="btn btn-success">Cari</button>
+                            <a href="{{ route('rumah.index') }}" class="btn btn-secondary">Reset</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <table class="table table-striped table-hover table-bordered">

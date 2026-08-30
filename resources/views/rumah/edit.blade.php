@@ -18,7 +18,7 @@
 
                 <div class="card-body">
 
-                    <form action="{{ route('rumah.update', $rumah->id) }}" method="POST">
+                    <form action="{{ route('rumah.update', $rumah->id) }}" method="POST" enctype="multipart/form-data">
 
                         @csrf
                         @method('PUT')
@@ -31,7 +31,7 @@
                             Kembali
                         </button>
 
-                        <button class="btn btn-primary float-end">
+                        <button type="submit" class="btn btn-primary float-end">
                             Simpan
                         </button>
 

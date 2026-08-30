@@ -18,8 +18,8 @@ class RumahController extends Controller
     {
         $search = $request->search;
         $kondisi = $request->kondisi;
-        $kecamatan = $request->kecamatan;
-        $kelurahan = $request->kelurahan;
+        $selectedKecamatan = $request->kecamatan;
+        $selectedKelurahan = $request->kelurahan;
         $tahun = $request->tahun_pendataan;
         $status = $request->status_verifikasi;
         $sorting = $request->sorting;
@@ -40,15 +40,15 @@ class RumahController extends Controller
         })
 
         //Filter Kecamatan
-        ->when($kecamatan, function ($query) use ($kecamatan) {
-                $query->whereHas('kelurahan', function ($q) use ($kecamatan) {
-                    $q->where('kecamatan_id', $kecamatan);
+        ->when($selectedKecamatan, function ($query) use ($selectedKecamatan) {
+                $query->whereHas('kelurahan', function ($q) use ($selectedKecamatan) {
+                    $q->where('kecamatan_id', $selectedKecamatan);
                 });
         })
 
         //Filter Kelurahan
-        ->when($kelurahan, function ($query) use ($kelurahan) {
-                $query->where('kelurahan_id', $kelurahan);
+        ->when($selectedKelurahan, function ($query) use ($selectedKelurahan) {
+                $query->where('kelurahan_id', $selectedKelurahan);
         })
 
         //Filter Tahun Pendataan
@@ -73,10 +73,14 @@ class RumahController extends Controller
                     $query->orderBy('nama_pemilik', 'desc');
                     break;
                 case 'terbaru':
+                    $query->latest();
+                    break;
                 default:
                     $query->latest();
                     break;
             }
+        }, function ($query) {
+            $query->latest();
         })
         ->paginate(10)
         ->withQueryString();
@@ -90,8 +94,32 @@ class RumahController extends Controller
         $daftarKecamatan = Kecamatan::orderBy('nama_kecamatan')->get();
         $daftarKelurahan = Kelurahan::orderBy('nama_kelurahan')->get();
         
-        return view('rumah.index', compact('rumah', 'kecamatan', 'kelurahan', 'daftarKecamatan', 'daftarKelurahan', 'totalRumah', 'rusakRingan', 'rusakSedang', 'rusakBerat'));
+        return view('rumah.index', compact('rumah', 'daftarKecamatan', 'daftarKelurahan', 'selectedKecamatan', 'selectedKelurahan', 'totalRumah', 'rusakRingan', 'rusakSedang', 'rusakBerat'));
 
+    }
+
+    public function dashboard()
+    {
+        $totalRumah = Rumah::count();
+
+        //Stat Kondisi
+        $rusakRingan = Rumah::where('kondisi', 'Rusak Ringan')->count();
+        $rusakSedang = Rumah::where('kondisi', 'Rusak Sedang')->count();
+        $rusakBerat = Rumah::where('kondisi', 'Rusak Berat')->count();
+
+        //Stat Verif
+        $belumDiverifikasi = Rumah::where('status_verifikasi', 'Belum diverifikasi')->count();
+        $terverifikasi = Rumah::where('status_verifikasi', 'Terverifikasi')->count();
+        $ditolak = Rumah::where('status_verifikasi', 'Ditolak')->count();
+
+        return view('dashboard', compact(
+            'totalRumah', 
+            'rusakRingan', 
+            'rusakSedang', 
+            'rusakBerat',
+            'belumDiverifikasi', 
+            'terverifikasi', 
+            'ditolak'));
     }
         
 

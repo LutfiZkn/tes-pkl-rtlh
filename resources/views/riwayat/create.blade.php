@@ -50,7 +50,7 @@
                             name="tanggal_survei" 
                             id="tanggal_survei" 
                             class="form-control @error('tanggal_survei') is-invalid @enderror" 
-                            value="{{ old('tanggal_survei', date('Y-m-d')) }}" required>
+                            value="{{ old('tanggal_survei', now()->format('Y-m-d')) }}" max="{{ now()->format('Y-m-d') }}" required>
 
                             @error('tanggal_survei')
                                 <div class="invalid-feedback">
