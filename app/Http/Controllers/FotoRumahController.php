@@ -16,6 +16,9 @@ class FotoRumahController extends Controller
 
         $fotoRumah->delete();
 
-        return back()->with('success', 'Foto berhasil dihapus.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto berhasil dihapus.',
+            ]);
     }
 }
