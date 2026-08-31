@@ -112,6 +112,18 @@ class RumahController extends Controller
         $terverifikasi = Rumah::where('status_verifikasi', 'Terverifikasi')->count();
         $ditolak = Rumah::where('status_verifikasi', 'Ditolak')->count();
 
+        //Peta
+        $rumahPeta = Rumah::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->get([
+            'id',
+            'nama_pemilik',
+            'kondisi',
+            'status_verifikasi',
+            'latitude',
+            'longitude',
+        ]);
+
         return view('dashboard', compact(
             'totalRumah', 
             'rusakRingan', 
@@ -119,7 +131,8 @@ class RumahController extends Controller
             'rusakBerat',
             'belumDiverifikasi', 
             'terverifikasi', 
-            'ditolak'));
+            'ditolak',
+            'rumahPeta'));
     }
         
 

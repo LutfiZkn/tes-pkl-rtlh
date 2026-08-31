@@ -183,7 +183,46 @@
         </div>
     </div>
 
+    <div class="card shadow-sm mt-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Peta Sebaran RTLH</h5>
+            <a href="{{ route('peta.index') }}" class="btn btn-primary">
+                Lihat Peta >
+            </a>
+        </div>
+
+        <div class="card-body p-0">
+            <div id="mapDashboard" style="height: 400px;"></div>
+        </div>
+    </div>
+
 @vite('resources/js/dashboard.js')
 
 </div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    const rumahDashboard = @json($rumahPeta);
+    const mapDashboard = L.map('mapDashboard').setView([-0.502106, 117.153709], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mapDashboard);
+
+    rumahDashboard.forEach(item => {
+        const marker = L.marker([
+            Number(item.latitude),
+            Number(item.longitude)
+        ]).addTo(mapDashboard);
+
+        marker.bindPopup(`
+        <strong>${item.nama_pemilik}</strong><br>
+        Kondisi: ${item.kondisi}<br>
+        Status: ${item.status_verifikasi}
+        `);
+    });
+</script>
+
 @endsection

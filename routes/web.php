@@ -7,6 +7,8 @@ use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FotoRumahController;
+use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\PetaController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -16,6 +18,14 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
+    //Dashboard
+    Route::get('/dashboard', [RumahController::class, 'dashboard'])
+        ->name('dashboard');
+
+    //Peta Sebaran
+    Route::get('/peta', [PetaController::class, 'index'])
+        ->name('peta.index');
+        
      // Rumah
     Route::get('/rumah/trash', [RumahController::class, 'trash'])
         ->name('rumah.trash');
@@ -25,6 +35,13 @@ Route::middleware('auth')->group(function () {
         ->name('rumah.forceDelete');
 
     Route::resource('rumah', RumahController::class);
+
+    //Riwayat
+    Route::get('/rumah/{rumah}/riwayat/create', [RiwayatController::class, 'create'])
+        ->name('rumah.riwayat.create');
+
+    Route::post('/rumah/{rumah}/riwayat', [RiwayatController::class, 'store'])
+        ->name('rumah.riwayat.store');
 
     //Kecamatan & Kelurahan
     Route::resource('kecamatan', KecamatanController::class);

@@ -22,9 +22,41 @@
 
                     @include('rumah.form')
 
-                    <div class="d-flex justify-content-end mb-3">
-                        <a href="{{ route('rumah.riwayat.create', $rumah) }}" class="btn btn-primary">Tambah Riwayat</a>
-                    </div>
+                    <!-- Long/Latitude -->
+                     @if($rumah->latitude !== null && $rumah->longitude !== null)
+
+                     <div class="mt-4">
+                        <h5>Lokasi Rumah</h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Latitude</strong>
+                                <p>{{ $rumah->latitude }}</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <strong>Longitude</strong>
+                                <p>{{ $rumah->longitude }}</p>
+                            </div>
+                        </div>
+                     </div>
+
+                     <!-- Map -->
+                     <div class="mt-3">
+                        <div class="mt-3">
+                            <div
+                                id="map"
+                                data-latitude="{{ $rumah->latitude }}"
+                                data-longitude="{{ $rumah->longitude }}"
+                                data-nama-pemilik="{{ $rumah->nama_pemilik }}"
+                                data-kondisi="{{ $rumah->kondisi }}"
+                                data-status-verifikasi="{{ $rumah->status_verifikasi }}"
+                                style="height: 400px;"
+                                class="rounded border"
+                            ></div>
+                        </div>
+                     </div>
+                     @endif
 
                     <!-- Foto Rumah -->
                     @if ($rumah->fotoRumah->isNotEmpty())
@@ -48,6 +80,9 @@
 
                     <!-- Histori Verif -->
                      <hr class="my-4">
+                     <div class="d-flex justify-content-end mb-3">
+                        <a href="{{ route('rumah.riwayat.create', $rumah) }}" class="btn btn-primary">Tambah Riwayat</a>
+                    </div>
                      <h5 class="mb-3">Riwayat Kondisi</h5>
                      @if ($rumah->riwayatRumah->isNotEmpty())
 
@@ -177,4 +212,32 @@
     </div>
 </div>
 
+@if($rumah->latitude !== null && $rumah->longitude !== null)
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        const mapElement = document.getElementById('map');
+        const latitude = Number(mapElement.dataset.latitude);
+        const longitude = Number(mapElement.dataset.longitude);
+        const namaPemilik = mapElement.dataset.namaPemilik;
+        const kondisi = mapElement.dataset.kondisi;
+        const statusVerifikasi = mapElement.dataset.statusVerifikasi;
+
+        const map = L.map(mapElement).setView([latitude, longitude], 16);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([latitude, longitude]).addTo(map)
+            .bindPopup(
+                '<strong>' + namaPemilik + '</strong><br>' +
+                'Kondisi: ' + kondisi + '<br>' +
+                'Status: ' + statusVerifikasi
+            )
+            .openPopup();
+    </script>
+@endif
 @endsection

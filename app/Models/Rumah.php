@@ -25,6 +25,8 @@ class Rumah extends Model
         'keterangan',
         'status_verifikasi',
         'alasan_penolakan',
+        'latitude',
+        'longitude',
     ];
 
     public function kelurahan()

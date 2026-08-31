@@ -33,6 +33,8 @@ class RumahRequest extends FormRequest
             ],
             'nik' => ['required', 'string', 'digits:16', Rule::unique('rumah', 'nik')->ignore($this->rumah)],
             'alamat' => 'required|string',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'kondisi' => 'required|string|max:30',
             'tahun_pendataan' => 'required|integer|min:2000|max:' . date('Y'),
             'keterangan' => 'nullable|string',
