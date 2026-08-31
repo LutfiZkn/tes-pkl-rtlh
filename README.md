@@ -28,17 +28,17 @@ Database yang digunakan: Laragon/phpMyAdmin
    DB_USERNAME=root
    DB_PASSWORD=
    ```
-5. Generate APP_KEY
+2. Generate APP_KEY
    `php artisan key:generate`
-6. Jalankan migration dan seeder
+3. Jalankan migration dan seeder
    `php artisan migrate --seed`
-7. Buat storage link
+4. Buat storage link
    `php artisan storage:link`
 
 ## STORAGE
 Foto rumah menggunakan Laravel Storage.
 Setelah instalasi project, jalankan:
-`php artisan storage:link` (Poin no. 7)
+`php artisan storage:link` (Poin no. 4 di langkah mengatur koneksi db)
 command tsb diperlukan agar foto yang diunggah dapat ditampilkan pada aplikasi
 
 ## AKUN DEMO
