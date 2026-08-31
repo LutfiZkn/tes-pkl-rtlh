@@ -9,7 +9,17 @@
     <h2 class="text-center fw-bold mb-4">DATA KECAMATAN</h2>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="float: right;"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="float: right;"></button>
+        </div>
     @endif
 
     <a href="{{ route('kecamatan.create') }}" class="btn btn-primary mb-3">Tambah Data</a>

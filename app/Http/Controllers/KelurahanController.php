@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Rumah;
 use App\Models\Kelurahan;
 use App\Models\Kecamatan;
 use App\Http\Requests\KelurahanRequest;
@@ -78,6 +79,12 @@ class KelurahanController extends Controller
     public function destroy(string $id)
     {
         $kelurahan = Kelurahan::findOrFail($id);
+
+        $adaRumah = Rumah::where('kelurahan_id', $kelurahan->id)->exists();
+
+        if ($adaRumah) {
+            return redirect()->route('kelurahan.index')->with('error', 'Kelurahan tidak dapat dihapus karena masih memiliki data rumah.');
+        }
         $kelurahan->delete();
 
         return redirect()->route('kelurahan.index')->with('success', 'Data kelurahan berhasil dihapus.');

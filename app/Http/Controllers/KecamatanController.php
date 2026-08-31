@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Rumah;
 use App\Models\Kecamatan;
 use App\Http\Requests\KecamatanRequest;
 
@@ -73,6 +74,18 @@ class KecamatanController extends Controller
     public function destroy(string $id)
     {
         $kecamatan = Kecamatan::findOrFail($id);
+
+        $adaRumah = Rumah::whereHas('kelurahan', function ($query) use ($kecamatan) {
+            $query->where('kecamatan_id', $kecamatan->id);
+        })->exists();
+
+        if ($adaRumah) {
+            return redirect()->route('kecamatan.index')->with('error', 'Kecamatan tidak dapat dihapus karena masih memiliki data rumah.');
+        }
+
+        //Hapus kelurahan yg ada di kecamatan
+        $kecamatan->kelurahan()->delete();
+
         $kecamatan->delete();
 
         return redirect()->route('kecamatan.index')->with('success', 'Data berhasil dihapus.');

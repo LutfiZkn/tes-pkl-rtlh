@@ -14,6 +14,13 @@
             </div>
         @endif
 
+     @if (session('error'))
+            <div class="alert alert-danger" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="float: right;"></button>
+            </div>
+        @endif
+
     <a href="{{ route('kelurahan.create') }}"
         class="btn btn-primary mb-3">
         Tambah Data
