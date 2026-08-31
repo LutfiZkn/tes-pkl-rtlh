@@ -242,7 +242,7 @@ class RumahController extends Controller
             }
         }
 
-        return redirect()->route('rumah.index')->with('success', 'Data rumah berhasil diperbarui.');
+        return redirect()->route('rumah.edit', $rumah)->with('success', 'Data rumah berhasil diperbarui.');
     }
 
     /**

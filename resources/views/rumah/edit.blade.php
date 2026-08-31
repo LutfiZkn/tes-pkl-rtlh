@@ -25,11 +25,9 @@
 
                         @include('rumah.form')
 
-                        <button type="button"
-                            class="btn btn-secondary"
-                            onclick="history.back()">
+                        <a href="{{ route('rumah.index') }}" class="btn btn-secondary float-start">
                             Kembali
-                        </button>
+                        </a>
 
                         <button type="submit" class="btn btn-primary float-end">
                             Simpan
