@@ -30,7 +30,6 @@
                     <th>No</th>
                     <th>Nama</th>
                     <th>Username</th>
-                    <th>Email</th>
                     <th>Role</th>
                     <th>Aksi</th>
                 </tr>
@@ -44,7 +43,6 @@
 
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->username }}</td>
-                    <td>{{ $user->email }}</td>
 
                     <td>
                         @if($user->role === 'Admin')

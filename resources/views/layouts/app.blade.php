@@ -12,7 +12,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ route('rumah.index') }}">DATA RUMAH</a>
+        <a class="navbar-brand" href="{{ route('dashboard') }}">DATA RUMAH</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent">
@@ -22,6 +22,12 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
             <ul class="navbar-nav me-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard') }}">
+                        Dashboard
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('rumah.index') }}">
