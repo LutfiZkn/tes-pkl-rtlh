@@ -8,6 +8,9 @@ use App\Http\Requests\RumahRequest;
 use App\Models\Rumah;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
+use App\Exports\RumahExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RumahController extends Controller
 {
@@ -24,7 +27,7 @@ class RumahController extends Controller
         $status = $request->status_verifikasi;
         $sorting = $request->sorting;
 
-        $rumah = Rumah::with('kelurahan.kecamatan')
+        $query = Rumah::with('kelurahan.kecamatan')
 
         //Search Nama/NIK
             ->when($search, function ($query) use ($search) {
@@ -61,6 +64,7 @@ class RumahController extends Controller
                 $query->where('status_verifikasi', $status);
         })
 
+        //Sorting
         ->when($sorting, function ($query) use ($sorting) {
             switch ($sorting) {
                 case 'terlama':
@@ -81,15 +85,17 @@ class RumahController extends Controller
             }
         }, function ($query) {
             $query->latest();
-        })
+        });
+
+        //Statistik mengikuti filter
+        $totalRumah = (clone $query)->count();
+        $rusakRingan = (clone $query)->where('kondisi', 'Rusak Ringan')->count();
+        $rusakSedang = (clone $query)->where('kondisi', 'Rusak Sedang')->count();
+        $rusakBerat = (clone $query)->where('kondisi', 'Rusak Berat')->count();
+
+        $rumah = $query
         ->paginate(10)
         ->withQueryString();
-
-        //Statistik
-        $totalRumah = Rumah::count();
-        $rusakRingan = Rumah::where('kondisi', 'Rusak Ringan')->count();
-        $rusakSedang = Rumah::where('kondisi', 'Rusak Sedang')->count();
-        $rusakBerat = Rumah::where('kondisi', 'Rusak Berat')->count();
 
         $daftarKecamatan = Kecamatan::orderBy('nama_kecamatan')->get();
         $daftarKelurahan = Kelurahan::orderBy('nama_kelurahan')->get();
@@ -318,5 +324,68 @@ class RumahController extends Controller
         ]);
 
         return redirect()->route('rumah.show', $rumah)->with('success', 'Data riwayat berhasil disimpan.');
+    }
+
+    //export excel
+    public function export(Request $request)
+    {
+        return Excel::download( new RumahExport($request),
+         'data-rumah-' . date('Y-m-d') . '.xlsx');
+    }
+
+    //export PDF
+    public function exportPdf(Request $request)
+    {
+        $rumah = Rumah::with('kelurahan.kecamatan')
+        ->when($request->search, function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_pemilik', 'like', '%' . $request->search . '%')
+                  ->orWhere('nik', 'like', '%' . $request->search . '%');
+            });
+        })
+        ->when($request->kondisi, function ($query) use ($request) {
+            $query->where('kondisi', $request->kondisi);
+        })
+        ->when($request->kecamatan, function ($query) use ($request) {
+            $query->whereHas('kelurahan', function ($q) use ($request) {
+                $q->where('kecamatan_id', $request->kecamatan);
+            });
+        })
+        ->when($request->kelurahan, function ($query) use ($request) {
+            $query->where('kelurahan_id', $request->kelurahan);
+        })
+        ->when($request->tahun_pendataan, function ($query) use ($request) {
+            $query->where('tahun_pendataan', $request->tahun_pendataan);
+        })
+        ->when($request->status_verifikasi, function ($query) use ($request) {
+            $query->where('status_verifikasi', $request->status_verifikasi);
+        })
+        ->when($request->sorting, function ($query) use ($request) {
+            switch ($request->sorting) {
+                case 'terlama':
+                    $query->oldest();
+                    break;
+
+                case 'nama_az':
+                    $query->orderBy('nama_pemilik', 'asc');
+                    break;
+
+                case 'nama_za':
+                    $query->orderBy('nama_pemilik', 'desc');
+                    break;
+
+                case 'terbaru':
+                    $query->latest();
+                    break;
+            }
+        }, function ($query) {
+            $query->latest();
+        })
+        ->get();
+
+        $pdf = PDF::loadView('rumah.export-pdf', compact('rumah'));
+        $pdf->setPaper('a4', 'landscape');
+
+        return $pdf->download('data-rumah-' . date('Y-m-d') . '.pdf');
     }
 }

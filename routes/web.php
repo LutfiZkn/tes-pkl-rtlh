@@ -26,13 +26,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/peta', [PetaController::class, 'index'])
         ->name('peta.index');
         
-     // Rumah
+     //Rumah
     Route::get('/rumah/trash', [RumahController::class, 'trash'])
         ->name('rumah.trash');
     Route::patch('/rumah/{id}/restore', [RumahController::class, 'restore'])
         ->name('rumah.restore');
     Route::delete('/rumah/{id}/force-delete', [RumahController::class, 'forceDelete'])
         ->name('rumah.forceDelete');
+
+    //Export excel
+    Route::get('/rumah/export-excel', [RumahController::class, 'export'])
+        ->name('rumah.export.excel');
+
+    //Export PDF
+    Route::get('/rumah/export-pdf', [RumahController::class, 'exportPdf'])
+        ->name('rumah.export.pdf');
 
     Route::resource('rumah', RumahController::class);
 

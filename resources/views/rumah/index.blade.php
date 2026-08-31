@@ -1,16 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-</head>
-<body>
+@extends('layouts.app')
 
-    @extends('layouts.app')
-    @section('title', 'Data Rumah')
-    @section('content')
+@section('title', 'Data Rumah')
+@section('content')
 
     <div class="container py-4">
         <h2 class="text-center fw-bold mb-4">PENDATAAN KONDISI RUMAH</h2>
@@ -28,11 +19,22 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h5 class="fw-bold mb-0">Ringkasan Data Rumah</h5>
 
-                    <!-- Button Tambah/Sampah -->
-                    <div class="d-flex gap-2">
+                    <!-- Export/Tambah/Sampah -->
+                    <div class="d-flex align-items-center gap-2 ms-auto">
+
+                        <div class="dropdown d-inline">
+                            <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Export Data</button>
+
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('rumah.export.excel', request()->query()) }}">Export Excel</a></li>
+                                <li><a class="dropdown-item" href="{{ route('rumah.export.pdf', request()->query()) }}">Export PDF</a></li>
+                            </ul>
+                        </div>
+
                         <a href="{{ route('rumah.create') }}" class="btn btn-primary btn-sm">
                             Tambah Data
                         </a>
+
                         <a href="{{ route('rumah.trash') }}" class="btn btn-danger btn-sm">
                             Data Terhapus
                         </a>
@@ -296,8 +298,4 @@
 
     </div>
 
-    @endsection
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-</body>
-</html>
+@endsection
