@@ -83,6 +83,11 @@ class UserController extends Controller
             'role' => ['required', Rule::in(['Admin', 'Petugas'])],
         ]);
 
+        //User yg sedang digunakan tdk boleh ganti role
+        if (Auth::id() === $user->id) {
+            $validated['role'] = $user->role;
+        }
+
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
