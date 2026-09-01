@@ -31,7 +31,7 @@ class RumahRequest extends FormRequest
                 'max:100',
                 Rule::unique('rumah', 'nama_pemilik')->ignore($this->rumah),
             ],
-            'nik' => ['required', 'string', 'digits:16', Rule::unique('rumah', 'nik')->ignore($this->rumah)],
+            'nik' => ['required', 'string', 'digits:16', 'starts_with:6472', Rule::unique('rumah', 'nik')->ignore($this->rumah)],
             'alamat' => 'required|string',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
