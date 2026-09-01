@@ -86,6 +86,17 @@
      </div>
  </div>
 
+ @if(!isset($readonly) || !$readonly)
+ <!-- MAP -->
+ <div class="mb-3">
+    <label class="form-label">Pilih Lokasi Rumah Pada Peta</label>
+
+    <div id="mapPilihLokasi" style="height: 350px; width: 100%; border-radius: 8px;"></div>
+
+    <small class="text-muted">Klik pada peta untuk menentukan lokasi rumah</small>
+ </div>
+ @endif
+
 <!-- Kelurahan -->
 <div class="mb-3">
     <label for="kelurahan_id" class="form-label">Kelurahan</label>
@@ -278,4 +289,49 @@ document.querySelectorAll('.hapus-foto-btn').forEach(function (btn) {
             </div>
         @enderror
     </div>
+@endif
+
+<!-- Leaflet -->
+@if(!isset($readonly) || !$readonly)
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+
+        const defaultLatitude = -0.502106;
+        const defaultLongitude = 117.153709;
+
+        const latitude = parseFloat(latitudeInput.value) || defaultLatitude;
+        const longitude = parseFloat(longitudeInput.value) || defaultLongitude;
+
+        const map = L.map('mapPilihLokasi').setView([latitude, longitude], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        let marker = null;
+
+        if (latitudeInput.value && longitudeInput.value) {
+            marker = L.marker([latitude, longitude]).addTo(map);
+        }
+
+        map.on('click', function (e) {
+            const lat = e.latlng.lat.toFixed(6);
+            const lng = e.latlng.lng.toFixed(6);
+
+            latitudeInput.value = lat;
+            longitudeInput.value = lng;
+
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            marker = L.marker([lat, lng]).addTo(map);
+        });
+    });
+ </script>
 @endif
